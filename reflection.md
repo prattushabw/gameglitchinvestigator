@@ -19,7 +19,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
  - The AI correctly identified that the hint messages in `check_guess` were swapped — when `guess > secret` the code was returning "Go HIGHER!" instead of "Go LOWER!". It refactored the function into `logic_utils.py` with the messages fixed and generated pytest tests (`test_too_high_message_says_go_lower`) that confirmed the fix. I verified it by running `pytest` and seeing the test go from fail to pass, and also by reading the corrected return values myself in `logic_utils.py`.
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
- -
+ -The AI generated starter tests that compared `check_guess(...)` against a plain string like `"Too High"`, but the function returns a tuple `("Too High", "Go LOWER!")`. All three tests failed immediately when I ran pytest. The AI caught and fixed this after seeing the output, but it was a reminder that AI-generated tests still need to be ran beacuse it is not always right
 
 ---
 
@@ -29,12 +29,13 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 - Did AI help you design or understand any tests? How?
-
+ - A bug was fixed when a failing pytest test turned green and I confirmed the correct behavior in the running app. For the hint direction fix, `test_too_high_message_says_go_lower` went from failing (`assert "LOWER" in "Go HIGHER!"`) to passing after I corrected the swapped messages. For the New Game reset, I verified manually — clicking New Game after winning now starts a fresh round instead of staying frozen. The AI also wrote the range-validation tests before the fix existed, so they acted as a spec that told me exactly what `parse_guess` needed to do.
 ---
 
 ## 4. What did you learn about Streamlit and state?
 
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+ - Every time you click a button or type something in a Streamlit app, the entire Python script reruns from the top — it's like refreshing the page from scratch each time. That means any normal variable you set would just get reset to its starting value on every click, which is why the game kept forgetting things. Session state is basically a dictionary that Streamlit keeps alive between those reruns, so values like the secret number and your score actually stick around. Once I understood that, the New Game bug made total sense — we were resetting some session state values but forgetting to reset others, so the game remembered it had already been won even after "restarting."
 
 ---
 
@@ -42,5 +43,10 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
   - This could be a testing habit, a prompting strategy, or a way you used Git.
+ - Writing tests before the fix was something I want to keep doing. The AI wrote the range validation tests when `parse_guess` still had the bug, so the failing tests acted like a checklist — I knew exactly what "done" looked like before I even touched the code. That felt way more structured than just guessing if something worked.
+
 - What is one thing you would do differently next time you work with AI on a coding task?
+ - I'd run the AI's output immediately instead of trusting it first. The test file the AI generated looked completely fine but failed the second I ran pytest because it was comparing a tuple to a string. It cost no time to catch once I ran it, but I could have easily missed it if I just skimmed the code and moved on.
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+ - I used to assume AI code was basically correct unless something looked obviously wrong. Now I think of it more like code from a teammate who works fast but sometimes makes subtle mistakes — it's a great starting point, but you still have to read it, run it, and test it yourself before trusting it.

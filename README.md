@@ -25,14 +25,31 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Describe the game's purpose.
+- [x] Detail which bugs you found.
+- [x] Explain what fixes you applied.
+
+**Game purpose:** A number guessing game where the player tries to guess a secret number within a limited number of attempts. After each guess the game gives a hint (Go Higher / Go Lower) to help narrow it down. Points are awarded based on how quickly you guess correctly.
+
+**Bugs found:**
+- Hint messages were backwards — guessing too high said "Go HIGHER!" and guessing too low said "Go LOWER!".
+- No range validation, so entering 101 or 0 was silently accepted instead of showing an error.
+- Clicking New Game after winning didn't fully reset — `status` and `history` were never cleared, so the game immediately froze on "You already won" again.
+- Guess history in the debug panel was always one submit behind due to Streamlit render order.
+
+**Fixes applied:**
+- Swapped the "Go HIGHER!" and "Go LOWER!" messages in `check_guess` in `logic_utils.py`.
+- Added range validation in `parse_guess` to reject any value outside 1–100.
+- Added `st.session_state.status = "playing"` and `st.session_state.history = []` to the New Game block in `app.py`.
+- Refactored all game logic out of `app.py` into `logic_utils.py`.
+- Fixed and expanded the pytest suite from 3 broken tests to 8 passing tests.
 
 ## 📸 Demo
 
-- [ ] [Insert a screenshot of your fixed, winning game here]
+- [x] [Insert a screenshot of your fixed, winning game here]
+
 
 ## 🚀 Stretch Features
 
-- [ ] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+- [x] [If you choose to complete Challenge 4, insert a screenshot of your Enhanced Game UI here]
+![image of passed test cases](image.png)
